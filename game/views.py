@@ -44,3 +44,15 @@ def medium_mode(request):
 
 def hard_mode(request):
     return render(request, 'game/hard.html')
+
+def index(request):
+    return render(request, 'game/index.html')
+
+def login(request):
+    return render(request, 'game/login.html')
+
+def homepage(request):
+    return render(request, 'game/homepage.html')
+
+def profile(request):
+    return render(request, 'game/profile.html')

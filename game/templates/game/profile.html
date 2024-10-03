@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Profile</title>
+    <link rel="stylesheet" href="./styles/profile.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="#" class="back-arrow">←</a>
+            <h2>Update Profile</h2>
+            <div class="profile-info">
+                <img src="./images/star.png" alt="Star" class="star-icon">
+                <span class="points">999</span>
+            </div>
+        </div>
+
+        <div class="profile-picture">
+            <img src="./images/profile.png" alt="Profile" class="profile-img">
+        </div>
+
+        <form class="profile-form">
+            <label for="name">Name</label>
+            <input type="text" id="name" value="John Doe">
+
+            <label for="email">Email</label>
+            <input type="email" id="email" value="JohnDoe@email.com">
+
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" value="+123 456 7890">
+
+            <button type="submit" class="update-profile-btn">Update Profile</button>
+        </form>
+
+        <div class="additional-actions">
+            <a href="#" class="change-password">Change Password</a>
+            <button class="logout-btn">Logout</button>
+        </div>
+    </div>
+</body>
+</html>
