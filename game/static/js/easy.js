@@ -7,9 +7,10 @@ const form = document.getElementById('answerForm');
 let playerX = 50;
 let playerY = 200;
 let playerSpeed = 20;
-const targetX = 100; // Target position at the end of the canvas
+const targetX = 350; // Target position at the end of the canvas
 const targetWidth = 50;
 let levelFinished = false;
+let lives = 3;
 
 // Function to draw the player (a simple rectangle for now)
 function drawPlayer() {
@@ -69,11 +70,34 @@ async function fetchQuestion() {
 // Call the fetchQuestion function when the page loads
 window.onload = fetchQuestion;
 
+// Function to update lives when an incorrect answer is given
+function loseLife() {
+    if (lives > 0) {
+        if (lives === 3) {
+            document.getElementById('life3').style.display = 'none';
+        } else if (lives === 2) {
+            document.getElementById('life2').style.display = 'none';
+        } else if (lives === 1) {
+            document.getElementById('life1').style.display = 'none';
+        }
+        lives--;
+    }
+
+    // Optional: Add logic here for when all lives are lost (Game Over)
+    if (lives === 0) {
+        alert("Game Over!");
+        // Redirect to the Game Select page after 2 seconds
+        setTimeout(() => {
+            window.location.href = "/gameselect/"; // Adjust this path based on your URL structure
+        }, 2000); // 2 seconds delay before redirecting
+    }
+}
+
 // Handle the form submission and validate the answer
-form.onsubmit = async function(event) {
+form.onsubmit = async function (event) {
     event.preventDefault(); // Prevent the form from refreshing the page
     console.log("Submitting form...");
-    
+
     const formData = new FormData(form);
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
@@ -87,17 +111,18 @@ form.onsubmit = async function(event) {
         });
 
         console.log("Form response:", response);
-        
+
         // Check if the response is OK and JSON parseable
         if (response.ok) {
             const result = await response.json();
             console.log("Result received:", result);
-            
+
             if (result.result === "correct") {
                 resultElement.innerText = "Correct! The character will move.";
                 movePlayer();  // Trigger the player movement when the answer is correct
             } else {
-                resultElement.innerText = "Incorrect! Try again.";
+                document.getElementById("result").innerText = "Incorrect! You lost a life.";
+                loseLife();  // Decrease life when answer is wrong
             }
         } else {
             const errorText = await response.text();
