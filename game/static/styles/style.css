@@ -21,14 +21,15 @@ body {
     border-radius: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
+    overflow: hidden; /* This ensures no overflow from the container */
 }
 
-.logo h1 {
-    font-size: 48px;
-    font-weight: bold;
-    color: #FFD700;
+/* Adjust BrightMind Image */
+.logo img {
+    max-width: 100%; /* Make sure the image fits the container */
+    height: auto;
     margin-bottom: 20px;
-    line-height: 0.9;
+    max-height: 120px; /* Adjust this value to fit your design */
 }
 
 .welcome-message h2 {
@@ -46,37 +47,35 @@ body {
 .actions {
     display: flex;
     flex-direction: column;
+    gap: 10px; /* Adds space between the buttons */
 }
 
-.create-account {
-    background-color: #FFD700;
-    border: none;
-    border-radius: 10px;
+.actions a {
+    display: block; /* Ensure the entire button area is clickable */
     padding: 15px;
-    margin-bottom: 10px;
+    text-align: center;
     font-size: 18px;
     font-weight: bold;
     color: #333;
+    border-radius: 10px;
     cursor: pointer;
+    text-decoration: none; /* Remove underline from links */
     transition: background-color 0.3s;
 }
 
-.create-account:hover {
+.actions a.btn-create-account {
+    background-color: #FFD700;
+}
+
+.actions a.btn-create-account:hover {
     background-color: #ffcc00;
 }
 
-.already-have-account {
+.actions a.btn-have-account {
     background-color: white;
     border: 2px solid #FFD700;
-    border-radius: 10px;
-    padding: 15px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-    cursor: pointer;
-    transition: background-color 0.3s;
 }
 
-.already-have-account:hover {
+.actions a.btn-have-account:hover {
     background-color: #f0f0f0;
 }
