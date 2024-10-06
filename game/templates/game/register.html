@@ -8,6 +8,7 @@
     <title>Create Account</title>
     <link rel="stylesheet" href="{% static 'styles/register.css' %}">
 </head>
+
 <body>
     <div class="container">
         <h2>Create your account</h2>
@@ -15,17 +16,18 @@
             {% csrf_token %}
             <label for="username">Username</label>
             <div class="input-wrapper">
-                <input type="text" id="username" name="username" placeholder="Enter username">
+                <input type="text" id="username" name="username" maxlength="25" pattern="[A-Za-z]+" required>
             </div>
 
             <label for="email">Email</label>
             <div class="input-wrapper">
-                <input type="email" id="email" name="email" placeholder="example@example.com">
+                <input type="email" id="email" name="email" placeholder="example@example.com" required>
             </div>
 
             <label for="phone">Phone</label>
             <div class="input-wrapper">
-                <input type="text" id="phone" name="phone" placeholder="04xxxxxxxx">
+                <input type="text" id="phone_number" name="phone_number" maxlength="10" pattern="04\d{8}"
+                    placeholder="e.g., 04xxxxxxxx" required>
             </div>
 
             <label for="password">Password</label>
@@ -35,12 +37,20 @@
 
             <label for="confirm-password">Confirm Password</label>
             <div class="input-wrapper">
-                <input type="password" id="confirm-password" name="confirm_password" placeholder="Confirm password">
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm password">
             </div>
 
+            <div class="create-account">
+                <button type="submit"
+                    style="display: block; padding: 15px; text-align: center; background-color: #FFD700; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; color: #333; text-decoration: none; cursor: pointer;">
+                    Create account
+                </button>
+                {% if error %}
+                    <p style="color: red;">{{ error }}</p>
+                {% endif %}
+            </div>
+            <!-- <a href="{% url 'homepage' %}" style="display: block; padding: 15px; text-align: center; background-color: #FFD700; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; color: #333; text-decoration: none; cursor: pointer;">Create account</a> -->
 
-            <a href="{% url 'homepage' %}" style="display: block; padding: 15px; text-align: center; background-color: #FFD700; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; color: #333; text-decoration: none; cursor: pointer;">Create account</a>
-            
         </form>
 
         <div class="divider">
@@ -49,10 +59,11 @@
             <hr>
         </div>
 
-        <button class="google-btn">
+        <div class="google-btn">
             <img src="{% static 'assets/google-symbol.png' %}" alt="Google icon">
             Continue with Google
-        </button>
+        </div>
     </div>
 </body>
+
 </html>
