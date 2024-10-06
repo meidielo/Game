@@ -13,7 +13,7 @@
     <div class="container">
         <div class="header">
             {% if user.is_authenticated %}
-            <h2>Hello <span class="username">{{ user.username }}</span></h2>
+            <h2>Hello <span class="username">{{ username }}</span></h2>
             {% else %}
             <h2>Hello Guest</h2>
             {% endif %}

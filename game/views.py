@@ -1,41 +1,65 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
+# from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login as auth_login
 from .models import Profile
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import JsonResponse
 import random
+import logging
+
+logger = logging.getLogger('django')
 
 def register(request):
     if request.method == 'POST':
+        logger.debug("Form submitted via POST")
         username = request.POST['username']
         email = request.POST['email']
-        phone = request.POST['phone']
+        phone_number = request.POST['phone_number']
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
 
-        if password == confirm_password:
+        # Validate passwords
+        if password != confirm_password:
+            logger.error("Passwords do not match")
+            return render(request, 'register.html', {'error': 'Passwords do not match'})
+
+        # Create the user
+        try:
             # Create the user
             user = User.objects.create_user(username=username, email=email, password=password)
-            # Create the user profile and save the phone number
-            Profile.objects.create(user=user, phone=phone)
+            logger.debug(f"User {username} created successfully")
+            
+            # Create the profile with the phone number
+            Profile.objects.create(user=user, phone_number=phone_number)
+            logger.debug(f"Profile for {username} created successfully")
 
+            # Automatically log the user in after registration
             auth_login(request, user)
-            return redirect('profile')
-        else:
-            # Handle password mismatch
-            return render(request, 'register.html', {'error': 'Passwords do not match'})
+            logger.debug(f"User {username} logged in successfully")
+
+            # Redirect to the homepage after successful registration
+            return redirect('homepage')
+
+        except Exception as e:
+            logger.error(f"Error creating user or profile: {e}")
+            return render(request, 'register.html', {'error': str(e)})
+
     return render(request, 'register.html')
 
 @login_required
 def homepage(request):
     user = request.user  # Get the logged-in user
+    profile = Profile.objects.get(user=user)  # Get the profile associated with the user
+    
+    # Pass both user and profile data to the template
     context = {
-        'name': user.username,  # Pass the username to the template
+        'username': user.username,
+        'email': user.email,
+        'phone_number': profile.phone_number,  # Assuming phone is stored in Profile model
     }
-    return render(request, 'game/homepage.html', context)
+    return render(request, 'homepage.html', context)
 
 # Generate an arithmetic question with no negative answers
 def generate_question(request):
