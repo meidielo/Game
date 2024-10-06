@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <link rel="stylesheet" href="{% static 'styles/register.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>Create your account</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <label for="username">Username</label>
+            <div class="input-wrapper">
+                <input type="text" id="username" name="username" placeholder="Enter username">
+            </div>
+
+            <label for="email">Email</label>
+            <div class="input-wrapper">
+                <input type="email" id="email" name="email" placeholder="example@example.com">
+            </div>
+
+            <label for="phone">Phone</label>
+            <div class="input-wrapper">
+                <input type="text" id="phone" name="phone" placeholder="04xxxxxxxx">
+            </div>
+
+            <label for="password">Password</label>
+            <div class="input-wrapper">
+                <input type="password" id="password" name="password" placeholder="Enter password">
+            </div>
+
+            <label for="confirm-password">Confirm Password</label>
+            <div class="input-wrapper">
+                <input type="password" id="confirm-password" name="confirm_password" placeholder="Confirm password">
+            </div>
+
+
+            <a href="{% url 'homepage' %}" style="display: block; padding: 15px; text-align: center; background-color: #FFD700; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; color: #333; text-decoration: none; cursor: pointer;">Create account</a>
+            
+        </form>
+
+        <div class="divider">
+            <hr>
+            <span>or</span>
+            <hr>
+        </div>
+
+        <button class="google-btn">
+            <img src="{% static 'assets/google-symbol.png' %}" alt="Google icon">
+            Continue with Google
+        </button>
+    </div>
+</body>
+</html>
