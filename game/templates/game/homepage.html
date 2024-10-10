@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="./styles/homepage.css">
+    <link rel="stylesheet" href="{% static 'game/homepage.css' %}">
 </head>
 <body>
     <div class="container">
@@ -12,10 +12,10 @@
             <h2>Hello <span class="username">John Doe!</span></h2>
             <div class="profile">
                 <div class="star">
-                    <img src="./images/star.png" alt="star" class="star-icon">
+                    <img src="{% static 'assets/star.png' %}" alt="star" class="star-icon">
                     <span class="points">999</span>
                 </div>
-                <img src="./images/profile.png" alt="profile" class="profile-icon">
+                <img src="{% static 'assets/profile.png' %}" alt="profile" class="profile-icon">
             </div>
         </div>
         <div class="menu">
