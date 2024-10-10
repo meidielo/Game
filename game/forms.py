@@ -5,8 +5,10 @@ from django import forms
 
 class PersonalForm(forms.Form):
 
-    username = forms.CharField(label="username", max_length = 100)
+    username = forms.CharField(label="Username", max_length = 100)
     # email = forms.CharField(label="email", max_length = 100)
     # phone_number = forms.CharField(label="phone", max_length = 100)
-    password = forms.CharField(label="password", max_length = 100)
-    confirm_password = forms.CharField(label="confirm_password", max_length = 100)
+    password = forms.CharField(label="Password", max_length=100, widget=forms.PasswordInput())
+    confirm_password = forms.CharField(label="Confirm Password", max_length=100, widget=forms.PasswordInput())
+    
+    
