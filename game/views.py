@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login
 from game.models import Profile
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.shortcuts import render
 from django.http.response import HttpResponseRedirect
 from django.http import JsonResponse
@@ -142,25 +143,38 @@ def register(request):
 
         # Validate passwords
         if password != confirm_password:
-            logger.error("Passwords do not match")
-            return render(request, 'register.html', {'error': 'Passwords do not match'})
+            # If passwords do not match, pass a flag to the template
+            return render(request, 'game/register.html', {
+                'form': form,
+                'password_mismatch': True
+            })
         
         # Create the user
         try:
             # Create the user
             user = User.objects.create_user(username=username, password=password)
-            logger.debug(f"User {username} created successfully")
+            # logger.debug(f"User {username} created successfully")
+            
+            # Automatically log the user in after registration
+            auth_login(request, user)
             
             # # Create the profile
             # Profile.objects.create(user=user, password=password)
             # logger.debug(f"Profile for {username} created successfully")
 
-            # Automatically log the user in after registration
-            auth_login(request, user)
-            logger.debug(f"User {username} logged in successfully")
+            # # Automatically log the user in after registration
+            # auth_login(request, user)
+            # logger.debug(f"User {username} logged in successfully")
+            
+            # Pass a success message to the template to trigger the alert
+            return render(request, 'game/register.html', {
+                'form': form,
+                'success': True,  # This will be used in JavaScript for triggering the alert
+                'username': username
+            })
 
-            # Redirect to the homepage after successful registration
-            return redirect('homepage')
+            # # Redirect to login page after successful registration
+            # return redirect('login')
 
         except Exception as e:
             logger.error(f"Error creating user or profile: {e}")
