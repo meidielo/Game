@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from django.contrib.auth import login as auth_login
+from django.contrib.auth import authenticate, login as auth_login
 from game.models import Profile
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -111,6 +111,7 @@ def index(request):
     return render(request, 'game/index.html')
 
 
+@login_required
 def homepage(request):
     return render(request, 'game/homepage.html')
 
@@ -186,5 +187,22 @@ def register(request):
         # context = {'registerform':form}
     return render(request, 'game/register.html', {"form": form})
 
-def login(request):
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+
+        # Authenticate the user
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            # If the user is authenticated, log them in and redirect to homepage
+            user_login(request, user)
+            return redirect('homepage')
+        else:
+            # If login is unsuccessful, reload the login page and display error
+            return render(request, 'game/login.html', {
+                'login_failed': True  # This will be used for the alert in the template
+            })
+
     return render(request, 'game/login.html')
