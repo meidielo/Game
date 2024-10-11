@@ -11,16 +11,22 @@
 <body>
     <div class="container">
         <h2>Create your account</h2>
-        <form class="account-form">
-            <label for="email">Email or username</label>
-            <input type="text" id="email" placeholder="enter email or username">
-
-            <label for="password">Password</label>
+        <form class="account-form" method="POST" autocomplete="off">
+            {% csrf_token %}
             <div class="input-wrapper">
-                <input type="password" id="password" placeholder="enter password">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
             </div>
 
-            <button type="submit" class="create-account-btn">Login</button>
+            <div class="input-wrapper">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="login-button">
+                <input type="submit" value="Login"
+                    style="display: block; padding: 15px; text-align: center; background-color: #FFD700; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; color: #333; text-decoration: none; cursor: pointer;">
+            </div>
         </form>
 
         <div class="divider">
@@ -29,10 +35,18 @@
             <hr>
         </div>
 
-        <button class="google-btn">
+        <div class="google-btn">
             <img src="{% static 'assets/google-symbol.png' %}" alt="Google icon">
             Continue with Google
-        </button>
+        </div>
     </div>
+    <!-- JavaScript for login failure alert -->
+    <script>
+        // Check if login failed
+        {% if login_failed %}
+            // Show the alert message for incorrect credentials
+            alert("The username or password you entered is incorrect!");
+        {% endif %}
+    </script>
 </body>
 </html>
