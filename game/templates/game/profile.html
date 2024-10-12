@@ -11,7 +11,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <a href="#" class="back-arrow">←</a>
+            <a href="{% url 'homepage' %}" class="back-arrow">←</a>
             <h2>Update Profile</h2>
             <div class="profile-info">
                 <img src="{% static 'assets/star.png' %}" alt="Star" class="star-icon">
@@ -24,10 +24,7 @@
         </div>
 
         <div class="profile-info">
-            <h2>{{ name }}</h2>
-            <p>Email: {{ email }}</p>
-            <p>Phone: {{ phone }}</p>
-            <!-- <p>Points: {{ points }}</p> -->
+            <p>Username: <span class="username">{{ username }}</span></p>
         </div>
         
 
@@ -45,8 +42,10 @@
         </form> -->
 
         <div class="additional-actions">
-            <a href="#" class="change-password">Change Password</a>
-            <a href="{% url 'index' %}" class="btn-logout">Logout</a>
+            
+            <a href="{% url 'index' %}" class="btn-logout"
+            style="display: block; padding: 15px; text-align: center; background-color: #FFD700; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; color: #333; text-decoration: none; cursor: pointer;">
+            Logout</a>
 
         </div>
     </div>

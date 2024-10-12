@@ -13,7 +13,7 @@
     <div class="container">
         <div class="header">
             {% if user.is_authenticated %}
-            <h2>Hello <span class="username">{{ username }}</span></h2>
+            <h2>Hello, <span class="username">{{ username }}</span></h2>
             {% else %}
             <h2>Hello Guest</h2>
             {% endif %}
@@ -22,7 +22,9 @@
                     <img src="{% static 'assets/star.png' %}" alt="star" class="star-icon">
                     <span class="points">999</span>
                 </div>
-                <img src="{% static 'assets/profile.png' %}" alt="profile" class="profile-icon">
+                <a href="{% url 'profile' %}">
+                    <img src="{% static 'assets/profile.png' %}" alt="profile" class="profile-icon">
+                </a>
             </div>
         </div>
         <div class="menu">
