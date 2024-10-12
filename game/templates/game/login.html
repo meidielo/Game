@@ -29,7 +29,7 @@
             </div>
         </form>
 
-        <div class="divider">
+        <!-- <div class="divider">
             <hr>
             <span>or</span>
             <hr>
@@ -38,10 +38,14 @@
         <div class="google-btn">
             <img src="{% static 'assets/google-symbol.png' %}" alt="Google icon">
             Continue with Google
-        </div>
+        </div> -->
     </div>
     <!-- JavaScript for login failure alert -->
     <script>
+        // Check if the username was not found
+        {% if username_not_found %}
+            alert("The username you entered did not match our records. Please double-check and try again.");
+        {% endif %}
         // Check if login failed
         {% if login_failed %}
             // Show the alert message for incorrect credentials

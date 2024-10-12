@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login, login
 from game.models import Profile
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -113,10 +113,17 @@ def index(request):
 
 @login_required
 def homepage(request):
-    return render(request, 'game/homepage.html')
+    user = request.user  # Get the logged-in user
+    return render(request, 'game/homepage.html', {
+        'username': user.username
+    })
 
+@login_required
 def profile(request):
-    return render(request, 'game/profile.html')
+    user = request.user  # Get the logged-in user
+    return render(request, 'game/profile.html', {
+        'username': user.username
+    })
 
 def register(request):
     
@@ -137,8 +144,6 @@ def register(request):
     if request.method == 'POST':
         logger.debug("Form submitted via POST")
         username = request.POST['username']
-        # email = request.POST['email']
-        # phone_number = request.POST['phone_number']
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
 
@@ -191,13 +196,23 @@ def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
+        
+        # Check if the username exists in the database
+        try:
+            user_exists = User.objects.get(username=username)
+        except User.DoesNotExist:
+            # If the username does not exist, show an error message
+            return render(request, 'game/login.html', {
+                'username_not_found': True  # This will trigger an error message in the template
+            })
+        
 
         # Authenticate the user
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             # If the user is authenticated, log them in and redirect to homepage
-            user_login(request, user)
+            login(request, user)
             return redirect('homepage')
         else:
             # If login is unsuccessful, reload the login page and display error

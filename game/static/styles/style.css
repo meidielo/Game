@@ -15,7 +15,7 @@ body {
 
 .container {
     width: 100%;
-    max-width: 400px;
+    max-width: 350px;
     background-color: #fff;
     padding: 20px;
     border-radius: 20px;
@@ -28,8 +28,8 @@ body {
 .logo img {
     max-width: 100%; /* Make sure the image fits the container */
     height: auto;
-    margin-bottom: 20px;
-    max-height: 120px; /* Adjust this value to fit your design */
+    /* margin-bottom: 20px; */
+    max-height: 100%; /* Adjust this value to fit your design */
 }
 
 .welcome-message h2 {
