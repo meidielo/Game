@@ -13,5 +13,6 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('homepage/', views.homepage, name='homepage'),
     path('index/', views.index, name='index'),
-    path('login/', views.login, name='login'),
+    path('register/', views.register, name='register'),
+    path('login/', views.user_login, name='login'),
 ]

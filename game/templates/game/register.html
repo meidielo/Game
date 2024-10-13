@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <link rel="stylesheet" href="{% static 'styles/register.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Create your account</h2>
+        <form method="POST" autocomplete="off">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <!-- <label for="username">Username</label>
+            <div class="input-wrapper">
+                <input type="text" id="username" name="username" maxlength="25" pattern="[A-Za-z]+" required>
+            </div>
+
+                <label for="email">Email</label>
+            <div class="input-wrapper">
+                <input type="email" id="email" name="email" placeholder="example@example.com" required>
+            </div>
+
+            <label for="phone">Phone</label>
+            <div class="input-wrapper">
+                <input type="text" id="phone_number" name="phone_number" maxlength="10" pattern="04\d{8}"
+                    placeholder="e.g., 04xxxxxxxx" required>
+            </div> -->
+
+            <!-- <label for="password">Password</label>
+            <div class="input-wrapper">
+                <input type="password" id="password" name="password" placeholder="Enter password">
+            </div>
+
+            <label for="confirm-password">Confirm Password</label>
+            <div class="input-wrapper">
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm password">
+            </div> -->
+
+            <div class="create-account">
+                <input type="submit" value="Create Account"
+                    style="display: block; padding: 15px; text-align: center; background-color: #FFD700; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; color: #333; text-decoration: none; cursor: pointer;">
+            </div>
+                {% if messages %}
+                    <ul class="messages">
+                      {% for message in messages %}
+                        <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                      {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <!-- Display error or success messages -->
+                {% if messages %}
+                    <ul class="messages">
+                      {% for message in messages %}
+                        <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                      {% endfor %}
+                    </ul>
+                {% endif %}
+
+        </form>
+
+        <!-- <div class="divider">
+            <hr>
+            <span>or</span>
+            <hr>
+        </div>
+
+        <div class="google-btn">
+            <img src="{% static 'assets/google-symbol.png' %}" alt="Google icon">
+            Continue with Google
+        </div> -->
+    </div>
+    <!-- JavaScript to handle alerts -->
+    <script>
+        // Check if the passwords do not match
+        {% if password_mismatch %}
+            alert("Passwords do not match!");
+            // Redirect back to the registration page (reload)
+            window.location.href = "{% url 'register' %}";
+        {% endif %}
+    
+        // Check if the registration was successful
+        {% if success %}
+            var username = "{{ username }}";
+            alert("Account for " + username + " created successfully!");
+            // Redirect to the login page after the alert is acknowledged
+            window.location.href = "{% url 'login' %}";
+        {% endif %}
+    </script>
+</body>
+
+</html>

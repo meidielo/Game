@@ -1,28 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="{% static 'game/homepage.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/homepage.css' %}">
 </head>
+
 <body>
     <div class="container">
         <div class="header">
-            <h2>Hello <span class="username">John Doe!</span></h2>
+            {% if user.is_authenticated %}
+            <h2>Hello, <span class="username">{{ username }}</span></h2>
+            {% else %}
+            <h2>Hello Guest</h2>
+            {% endif %}
             <div class="profile">
                 <div class="star">
                     <img src="{% static 'assets/star.png' %}" alt="star" class="star-icon">
                     <span class="points">999</span>
                 </div>
-                <img src="{% static 'assets/profile.png' %}" alt="profile" class="profile-icon">
+                <a href="{% url 'profile' %}">
+                    <img src="{% static 'assets/profile.png' %}" alt="profile" class="profile-icon">
+                </a>
             </div>
         </div>
         <div class="menu">
-            <button class="menu-item">🎮 Play Games</button>
+            <a href="{% url 'game_select' %}"
+                style="display: block; padding: 15px; text-align: center; background-color: #FFD700; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; color: #333; text-decoration: none; cursor: pointer;">
+                🎮 Play Games</a>
             <button class="menu-item">📝 Take Quiz</button>
             <button class="menu-item">🧮 Basic Calculation</button>
         </div>
     </div>
 </body>
+
 </html>

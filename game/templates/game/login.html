@@ -1,41 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Account</title>
-    <link rel="stylesheet" href="./styles/login.css">
+    <link rel="stylesheet" href="{% static 'styles/login.css' %}">
 </head>
 <body>
     <div class="container">
         <h2>Create your account</h2>
-        <form class="account-form">
-            <label for="email">Email or username</label>
-            <input type="text" id="email" placeholder="enter email or username">
-
-            <label for="password">Password</label>
+        <form class="account-form" method="POST" autocomplete="off">
+            {% csrf_token %}
             <div class="input-wrapper">
-                <input type="password" id="password" placeholder="enter password">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
             </div>
 
-            <label for="confirm-password">Confirm Password</label>
             <div class="input-wrapper">
-                <input type="password" id="confirm-password" placeholder="confirm password">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
             </div>
 
-            <button type="submit" class="create-account-btn">Create account</button>
+            <div class="login-button">
+                <input type="submit" value="Login"
+                    style="display: block; padding: 15px; text-align: center; background-color: #FFD700; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; color: #333; text-decoration: none; cursor: pointer;">
+            </div>
         </form>
 
-        <div class="divider">
+        <!-- <div class="divider">
             <hr>
             <span>or</span>
             <hr>
         </div>
 
-        <button class="google-btn">
-            <img src="./images/google-symbol.png" alt="Google icon">
+        <div class="google-btn">
+            <img src="{% static 'assets/google-symbol.png' %}" alt="Google icon">
             Continue with Google
-        </button>
+        </div> -->
     </div>
+    <!-- JavaScript for login failure alert -->
+    <script>
+        // Check if the username was not found
+        {% if username_not_found %}
+            alert("The username you entered did not match our records. Please double-check and try again.");
+        {% endif %}
+        // Check if login failed
+        {% if login_failed %}
+            // Show the alert message for incorrect credentials
+            alert("The username or password you entered is incorrect!");
+        {% endif %}
+    </script>
 </body>
 </html>
