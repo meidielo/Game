@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.game_select, name='gameselect'),  # The main game page
+    path('', views.index, name='index'),  # The main game page
     path('generate_question/', views.generate_question, name='generate_question'),  # API to generate questions
     path('validate_answer/', views.validate_answer, name='validate_answer'),  # API to validate answers
     path('gameselect/', views.game_select, name='game_select'),
