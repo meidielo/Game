@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can you pass this stage</title>
+    <link href="{% static 'styles/Game.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <h1>{{ mode|capfirst }} Mode</h1>
+
+    <!-- Injecting the mode into JavaScript -->
+    <script>
+        var mode = "{{ mode }}";  // Make the mode accessible in JavaScript
+    </script>
+
+    <p id="question">Loading...</p>
+
+    <form id="answerForm" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="correct_answer" id="correct_answer">
+        <input type="number" name="answer" id="user_answer" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <p id="result"></p>
+
+    <div style="position: relative; display: inline-block;">
+        <!-- The canvas -->
+        <canvas id="gameCanvas" width="800" height="400" style="border:1px solid black;"></canvas>
+
+        <!-- Lives (hearts) on top right of the canvas -->
+        <img id="life1" src="{% static 'assets/heart.png' %}"
+            style="position: absolute; top: 10px; left: 10px; width: 30px; height: 30px;">
+        <img id="life2" src="{% static 'assets/heart.png' %}"
+            style="position: absolute; top: 10px; left: 50px; width: 30px; height: 30px;">
+        <img id="life3" src="{% static 'assets/heart.png' %}"
+            style="position: absolute; top: 10px; left: 90px; width: 30px; height: 30px;">
+    </div>
+
+    <!-- Level Complete Popup -->
+    <div id="levelCompletePopup" class="popup">
+        <div class="popup-content">
+            <h2>Level Complete</h2>
+            <div id="starsContainer" class="stars"></div> <!-- The number of stars will be dynamically added here -->
+            <div class="popup-buttons">
+                <button id="replayButton">Replay</button>
+                <button id="nextButton">Next</button>
+                <button id="gameSelectButton">Game Select</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/game.js' %}"></script>
+    </body>
+
+</html>
