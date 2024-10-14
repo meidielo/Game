@@ -14,8 +14,8 @@
     <header>
         <a href="{% url 'homepage' %}" class="back-button">← Play games</a>
         <div class="stars-section">
+            <span class="score">{{ points }}</span>
             <span class="star-icon">⭐</span>
-            <span class="score">999</span>
             <img src="{% static 'assets/avatar.png' %}" alt="Profile" class="profile-icon">
         </div>
     </header>
@@ -27,7 +27,7 @@
                 <div class="carousel-inner">
                     <div class="carousel-item active">
                         <div class="game-card d-block">
-                            <a href="{% url 'easy_mode' %}">
+                            <a href="{% url 'game_mode' 'easy' %}">
                                 <img src="{% static 'assets/icon.png' %}" class="d-block" alt="Easy Game">
                                 <p class="text-center">Game 1</p>
                             </a>
@@ -53,7 +53,7 @@
                 <div class="carousel-inner">
                     <div class="carousel-item active">
                         <div class="game-card d-block">
-                            <a href="{% url 'medium_mode' %}">
+                            <a href="{% url 'game_mode' 'medium' %}">
                                 <img src="{% static 'assets/icon.png' %}" class="d-block" alt="Medium Game">
                                 <p class="text-center">Game 2</p>
                             </a>
@@ -79,7 +79,7 @@
                 <div class="carousel-inner">
                     <div class="carousel-item active">
                         <div class="game-card d-block">
-                            <a href="{% url 'hard_mode' %}">
+                            <a href="{% url 'game_mode' 'hard' %}">
                                 <img src="{% static 'assets/icon.png' %}" class="d-block" alt="Hard Game">
                                 <p class="text-center">Game 3</p>
                             </a>

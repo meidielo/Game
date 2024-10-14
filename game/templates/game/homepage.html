@@ -19,8 +19,8 @@
             {% endif %}
             <div class="profile">
                 <div class="star">
+                    <span class="points">{{ points }}</span>
                     <img src="{% static 'assets/star.png' %}" alt="star" class="star-icon">
-                    <span class="points">999</span>
                 </div>
                 <a href="{% url 'profile' %}">
                     <img src="{% static 'assets/profile.png' %}" alt="profile" class="profile-icon">
@@ -28,11 +28,15 @@
             </div>
         </div>
         <div class="menu">
-            <a href="{% url 'game_select' %}"
+            <a class="menu-item" href="{% url 'game_mode' 'easy' %}"
                 style="display: block; padding: 15px; text-align: center; background-color: #FFD700; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; color: #333; text-decoration: none; cursor: pointer;">
-                🎮 Play Games</a>
-            <button class="menu-item">📝 Take Quiz</button>
-            <button class="menu-item">🧮 Basic Calculation</button>
+                Easy</a>
+            <a class="menu-item" href="{% url 'game_mode' 'medium' %}"
+                style="display: block; padding: 15px; text-align: center; background-color: #FFD700; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; color: #333; text-decoration: none; cursor: pointer;">
+                Medium</a>
+            <a class="menu-item" href="{% url 'game_mode' 'hard' %}"
+                style="display: block; padding: 15px; text-align: center; background-color: #FFD700; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; color: #333; text-decoration: none; cursor: pointer;">
+                Hard</a>
         </div>
     </div>
 </body>

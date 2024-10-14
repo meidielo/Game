@@ -1,5 +1,7 @@
+import json
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login as auth_login, login
 from game.models import Profile
 from django.contrib.auth.decorators import login_required
@@ -64,20 +66,54 @@ logger = logging.getLogger('django')
 #     }
 #     return render(request, 'homepage.html', context)
 
-# Generate an arithmetic question with no negative answers
-def generate_question(request):
+# Generate an arithmetic question with no negative answers, adjusted based on mode
+def generate_question(request, mode):
     num1 = random.randint(1, 10)
     num2 = random.randint(1, 10)
-    operation = random.choice(["+", "-"])
 
-    if operation == "-":
-        # Ensure the result is non-negative by making num1 >= num2
-        if num1 < num2:
-            num1, num2 = num2, num1
+    if mode == "easy":
+        # Easy mode: only addition and subtraction
+        operation = random.choice(["+", "-"])
 
-    question = f"{num1} {operation} {num2}"
-    answer = eval(question)
+        if operation == "-":
+            # Ensure the result is non-negative by making num1 >= num2
+            if num1 < num2:
+                num1, num2 = num2, num1
+
+        question = f"{num1} {operation} {num2}"
+        answer = eval(question)
     
+    elif mode == "medium":
+        # Medium mode: multiplication and division
+        operation = random.choice(["*", "/"])
+
+        if operation == "/":
+            # Ensure no division by zero and integer division only
+            num1 = random.randint(1, 10) * num2  # Ensure divisible result
+
+        question = f"{num1} {operation} {num2}"
+        answer = eval(question)
+
+    elif mode == "hard":
+        while True:  # Repeat the process until a valid question with an integer answer is generated
+            num3 = random.randint(1, 10)
+            operation1 = random.choice(["+", "-", "*", "/"])
+            operation2 = random.choice(["+", "-", "*", "/"])
+    
+            # Ensure num1 and num2 are divisible for division cases
+            if operation1 == "/" and num2 != 0:
+                num1 = random.randint(1, 10) * num2  # Make num1 divisible by num2
+    
+            if operation2 == "/" and num3 != 0:
+                num2 = random.randint(1, 10) * num3  # Make num2 divisible by num3
+    
+            question = f"({num1} {operation1} {num2}) {operation2} {num3}"
+            answer = eval(question)
+    
+            # Check if the answer is a whole number
+            if isinstance(answer, int):
+                break  # Exit the loop when a whole number is generated
+
     return JsonResponse({"question": question, "answer": answer})
 
 # Validate the player's answer
@@ -92,20 +128,35 @@ def validate_answer(request):
             return JsonResponse({"result": "incorrect"})
         
 
+def update_points(request):
+    if request.method == 'POST':
+        user = request.user
+
+        # Try to get the profile or create it if it doesn't exist
+        try:
+            profile = user.profile  # This assumes OneToOneField is correctly set up
+        except Profile.DoesNotExist:
+            # Create the profile if missing
+            profile = Profile.objects.create(user=user)
+
+        # Get the points from the POST request
+        data = json.loads(request.body)  # Read the JSON data
+        new_points = int(data.get('points'))
+
+        # Add the new points to the existing points
+        profile.points += new_points
+        profile.save()
+
+        logger.debug(f"Points updated: {profile.points}")
+        return JsonResponse({'status': 'success', 'points': profile.points})
+    
+    return JsonResponse({'status': 'error'}, status=400)
+
 def question_page(request):
     return render(request, 'game/game.html')
 
-def game_select(request):
-    return render(request, 'game/GameSelect.html')
-
-def easy_mode(request):
-    return render(request, 'game/easy.html')
-
-def medium_mode(request):
-    return render(request, 'game/medium.html')
-
-def hard_mode(request):
-    return render(request, 'game/hard.html')
+def game_mode(request, mode):
+    return render(request, 'game/game.html', {'mode': mode})
 
 def index(request):
     return render(request, 'game/index.html')
@@ -114,15 +165,29 @@ def index(request):
 @login_required
 def homepage(request):
     user = request.user  # Get the logged-in user
+    try:
+        profile = user.profile  # This assumes OneToOneField is correctly set up
+    except Profile.DoesNotExist:
+        # Handle case where the profile doesn't exist
+        profile = Profile.objects.create(user=user)  # Create a profile if missing
+
     return render(request, 'game/homepage.html', {
-        'username': user.username
+        'username': user.username,
+        'points': profile.points
     })
 
 @login_required
 def profile(request):
     user = request.user  # Get the logged-in user
+    try:
+        profile = user.profile  # This assumes OneToOneField is correctly set up
+    except Profile.DoesNotExist:
+        # Handle case where the profile doesn't exist
+        profile = Profile.objects.create(user=user)  # Create a profile if missing
+
     return render(request, 'game/profile.html', {
-        'username': user.username
+        'username': user.username,
+        'points': profile.points
     })
 
 def register(request):
@@ -155,11 +220,21 @@ def register(request):
                 'password_mismatch': True
             })
         
+        # Check if the username already exists
+        if User.objects.filter(username=username).exists():
+            return render(request, 'game/register.html', {
+                'form': form,
+                'username_taken': True  # Pass flag to display an error message in template
+            })
+        
         # Create the user
         try:
             # Create the user
             user = User.objects.create_user(username=username, password=password)
             # logger.debug(f"User {username} created successfully")
+
+            # Create the corresponding profile for the user
+            Profile.objects.create(username=username, password=password, confirm_password=confirm_password, points=0)
             
             # Automatically log the user in after registration
             auth_login(request, user)

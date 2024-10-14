@@ -45,22 +45,22 @@
                 <input type="submit" value="Create Account"
                     style="display: block; padding: 15px; text-align: center; background-color: #FFD700; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; color: #333; text-decoration: none; cursor: pointer;">
             </div>
-                {% if messages %}
-                    <ul class="messages">
-                      {% for message in messages %}
-                        <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-                      {% endfor %}
-                    </ul>
-                {% endif %}
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <p {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</p>
+                {% endfor %}
+            </ul>
+            {% endif %}
 
-                <!-- Display error or success messages -->
-                {% if messages %}
-                    <ul class="messages">
-                      {% for message in messages %}
-                        <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-                      {% endfor %}
-                    </ul>
-                {% endif %}
+            <!-- Display error or success messages -->
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <p {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</p>
+                {% endfor %}
+            </ul>
+            {% endif %}
 
         </form>
 
@@ -79,17 +79,21 @@
     <script>
         // Check if the passwords do not match
         {% if password_mismatch %}
-            alert("Passwords do not match!");
-            // Redirect back to the registration page (reload)
-            window.location.href = "{% url 'register' %}";
+        alert("Passwords do not match!");
+        // Redirect back to the registration page (reload)
+        window.location.href = "{% url 'register' %}";
         {% endif %}
-    
+
+        {% if username_taken %}
+            <p style="color: red;">Username is already taken. Please choose another.</p>
+        {% endif %}
+
         // Check if the registration was successful
         {% if success %}
-            var username = "{{ username }}";
-            alert("Account for " + username + " created successfully!");
-            // Redirect to the login page after the alert is acknowledged
-            window.location.href = "{% url 'login' %}";
+        var username = "{{ username }}";
+        alert("Account for " + username + " created successfully!");
+        // Redirect to the login page after the alert is acknowledged
+        window.location.href = "{% url 'login' %}";
         {% endif %}
     </script>
 </body>
