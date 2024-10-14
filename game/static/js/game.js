@@ -278,7 +278,7 @@ function loseLife() {
         alert("Game Over!");
         // Redirect to the Game Select page after 2 seconds
         setTimeout(() => {
-            window.location.href = "/gameselect/"; // Adjust this path based on your URL structure
+            window.location.href = "/homepage/"; // Adjust this path based on your URL structure
         }, 2000); // 2 seconds delay before redirecting
     }
 }
