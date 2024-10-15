@@ -8,12 +8,21 @@ const form = document.getElementById('answerForm');
 // Dino sprite settings
 const SPRITE_WIDTH = 24;  // Width of each frame in the sprite sheet
 const SPRITE_HEIGHT = 24; // Height of each frame in the sprite sheet
-const MOVING_START_FRAME = 18;  // Starting frame of the moving animation
-const MOVING_END_FRAME = 24;    // Ending frame of the moving animation
+const MOVING_START_FRAME = 0;  // Starting frame of the moving animation
+const MOVING_END_FRAME = 14;    // Ending frame of the moving animation
 const IDLE_FRAMES = 3;    // Number of frames for idle animation (first 3)
 const LOSS_ANIMATION_FRAMES = [15, 16, 17];
-let playerX = 50;
-let playerY = 280;
+// Calculate the scaling factor based on the canvas width (relative scaling)
+let scalingFactor = canvas.width / 800; // Use 800 as your default canvas width for scaling
+
+// Scale the player size dynamically based on the canvas size
+let playerWidth = 100 * scalingFactor;  // Adjust size as 10% of the canvas width
+let playerHeight = 100 * scalingFactor; // Adjust size as 10% of the canvas height
+
+// Adjust the player's X and Y position based on the canvas size
+let playerX = canvas.width * 0.1;  // Set X position relative to the canvas width (10% from the left)
+let playerY = canvas.height - playerHeight + 10;  // Set Y position relative to the canvas height (70% from the top, adjust for height)
+
 let playerSpeed = 2;  // Reduce speed for smoother movement
 let levelFinished = false;
 let lives = 3;
@@ -24,34 +33,51 @@ let moving = false;  // Check if the player is moving
 let isLosingLife = false;  // Flag to check if life loss animation is happening
 let lossFrameIndex = 0; // Track which frame of life loss animation to show
 
-const PORTAL_WIDTH = 32;   // Adjust width as per your portal sprite frame size
-const PORTAL_HEIGHT = 32;  // Adjust height as per your portal sprite frame size
-const TOTAL_PORTAL_FRAMES = 7; // Number of frames in your portal sprite sheets
-let portalFrame = 0;
-const PORTAL_FRAME_DURATION = 100;  // Adjust for desired animation speed
-let lastPortalFrameTime = 0;
+// const PORTAL_WIDTH = 32;   // Adjust width as per your portal sprite frame size
+// const PORTAL_HEIGHT = 32;  // Adjust height as per your portal sprite frame size
+// const TOTAL_PORTAL_FRAMES = 7; // Number of frames in your portal sprite sheets
+// let portalFrame = 0;
+// const PORTAL_FRAME_DURATION = 100;  // Adjust for desired animation speed
+// let lastPortalFrameTime = 0;
 
-const targetX = 800; // Target position at the end of the canvas
+// const targetX = 800; // Target position at the end of the canvas
+// let targetPositionX = playerX;  // The position the player is moving toward
 
 let movesMade = 0; // Track how many moves the player has made
 let movesBeforeGoal = 3; // Number of moves before the player reaches the goal
-let distancePerMove = targetX / movesBeforeGoal;  // Distance the player will move per question answered
+let distancePerMove = (canvas.width - playerWidth - 10) / movesBeforeGoal;  // Distance the player moves per question
 
-let targetPositionX = playerX;  // The position the player is moving toward
+let backgroundX = 0;  // Starting position of the background
+const backgroundSpeed = 2;  // Speed at which the background moves
+let backgroundReachedEnd = false;  // Track if the background has reached the end
+
+let stageComplete = false;  // Flag to track if the stage is complete
 
 // Load the background image
 const background = new Image();
 background.src = '/static/assets/Background.png';
 
-const portalSpriteSheet = new Image();
-portalSpriteSheet.src = '/static/assets/portal5_spritesheet.png';
+// const portalSpriteSheet = new Image();
+// portalSpriteSheet.src = '/static/assets/portal5_spritesheet.png';
 
 const dinoSpriteSheet = new Image();
 dinoSpriteSheet.src = '/static/assets/DinoSprites - doux.png';
 
 // Function to draw the background
 function drawBackground() {
-    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+    if (moving && !backgroundReachedEnd) {
+        // Scroll the background by updating its position only if it hasn't reached the end
+        backgroundX -= backgroundSpeed;
+
+        // If the background reaches the end, stop moving it
+        if (backgroundX <= -canvas.width) {
+            backgroundReachedEnd = true;  // Mark that the background has reached the end
+        }
+    }
+
+    // Draw the background twice to create a looping effect
+    ctx.drawImage(background, backgroundX, 0, canvas.width, canvas.height);
+    ctx.drawImage(background, backgroundX + canvas.width, 0, canvas.width, canvas.height);
 }
 
 // Function to draw the entire game screen
@@ -59,7 +85,7 @@ function drawScene() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas once here
     drawBackground();  // Draw the background
     drawPlayer();  // Draw the player (including any animations)
-    drawPortals();  // Draw the door (target)
+    // drawPortals();  // Draw the door (target)
 }
 
 // Function to draw the player (using the dino sprite)
@@ -70,41 +96,46 @@ function drawPlayer() {
         ctx.drawImage(
             dinoSpriteSheet,
             LOSS_ANIMATION_FRAMES[lossFrameIndex] * SPRITE_WIDTH, 0, SPRITE_WIDTH, SPRITE_HEIGHT,  // Source rectangle
-            playerX, playerY, 100, 100  // Adjust for flipping
+            playerX, playerY, playerWidth, playerHeight
         );
     } else {
         ctx.drawImage(
             dinoSpriteSheet,
             currentFrame * SPRITE_WIDTH, 0, SPRITE_WIDTH, SPRITE_HEIGHT,  // Source rectangle
-            playerX, playerY, 100, 100  // Adjust for flipping
+            playerX, playerY, playerWidth, playerHeight
         );
     }
 }
 
-function drawPortals() {
-    const now = Date.now();
-    if (now - lastPortalFrameTime > PORTAL_FRAME_DURATION) {
-        portalFrame = (portalFrame + 1) % TOTAL_PORTAL_FRAMES;
-        lastPortalFrameTime = now;
-    }
+// function drawPortals() {
+//     const now = Date.now();
+//     if (now - lastPortalFrameTime > PORTAL_FRAME_DURATION) {
+//         portalFrame = (portalFrame + 1) % TOTAL_PORTAL_FRAMES;
+//         lastPortalFrameTime = now;
+//     }
 
-    // Drawing one portal as big as the player, placed on the ground
-    ctx.drawImage(
-        portalSpriteSheet, // Use the first portal sprite sheet or the desired one
-        portalFrame * PORTAL_WIDTH, 0, PORTAL_WIDTH, PORTAL_HEIGHT,  // Source from sprite sheet
-        targetX, playerY + 20, 64, 64  // Adjust size and Y position to match player on the ground
-    );
-}
+//     // Drawing one portal as big as the player, placed on the ground
+//     ctx.drawImage(
+//         portalSpriteSheet, // Use the first portal sprite sheet or the desired one
+//         portalFrame * PORTAL_WIDTH, 0, PORTAL_WIDTH, PORTAL_HEIGHT,  // Source from sprite sheet
+//         targetX, playerY + 20, 64, 64  // Adjust size and Y position to match player on the ground
+//     );
+// }
 
 
 // Function to move the player when an answer is correct
 function movePlayer() {
     if (!levelFinished && movesMade < movesBeforeGoal) {
         movesMade++;  // Increment the number of moves made
-        targetPositionX = playerX + distancePerMove; // Set the target position
-        moving = true;  // Start smooth movement
+        // targetPositionX = playerX + distancePerMove; // Set the target position
+        moving = true;  // Start smooth movement and walking animation
+
+        setTimeout(() => {
+            moving = false;  // Stop moving after a short delay
+        }, 2000);  // Duration for moving and animation (e.g., 2 seconds)
     }
 }
+
 
 // Function to update the animation frame
 function updateFrame() {
@@ -118,18 +149,15 @@ function updateFrame() {
             if (lossFrameIndex === 0) {
                 isLosingLife = false; // Stop life loss animation
             }
-        } else {
-            // Update frame based on whether the player is moving or idle
-            if (moving) {
-                // Loop through frames 18 to 24 for moving animation
-                currentFrame = (currentFrame + 1);
-                if (currentFrame > MOVING_END_FRAME) {
-                    currentFrame = MOVING_START_FRAME; // Loop back to frame 18
-                }
-            } else {
-                // Loop through the idle frames (first 3 frames)
-                currentFrame = (currentFrame + 1) % IDLE_FRAMES;
+        } else if (moving) {
+            // Loop through frames 18 to 24 for moving animation only when the player is moving
+            currentFrame = (currentFrame + 1);
+            if (currentFrame > MOVING_END_FRAME) {
+                currentFrame = MOVING_START_FRAME; // Loop back to frame 18
             }
+        } else {
+            // Loop through the idle frames (first 3 frames) when the player is not moving
+            currentFrame = (currentFrame + 1) % IDLE_FRAMES;
         }
         lastFrameTime = now;
     }
@@ -138,13 +166,17 @@ function updateFrame() {
 // Function to animate the game
 function animate() {
     if (!levelFinished) {
-        // If the player is moving, move gradually toward the target position
+        // If the player is moving
         if (moving) {
-            if (playerX < targetPositionX) {
-                playerX += playerSpeed;  // Move the player slightly in each frame
-                if (playerX >= targetPositionX) {
-                    playerX = targetPositionX;  // Snap to target position once reached
-                    moving = false;  // Stop moving
+            if (backgroundReachedEnd) {
+                // Move the player if the background has stopped moving
+                if (playerX < canvas.width - playerWidth - 10) {  // Move player to the end of the canvas
+                    playerX += playerSpeed;  // Move the player slightly in each frame
+                    if (playerX >= canvas.width - playerWidth - 10) {
+                        playerX = canvas.width - playerWidth - 10;  // Snap to end position
+                        moving = false;  // Stop moving
+                        stageComplete = true;  // Mark the stage as complete
+                    }
                 }
             }
         }
@@ -157,7 +189,13 @@ function animate() {
 
     // Keep the animation loop running
     requestAnimationFrame(animate);
+
+    // Check if the stage is complete
+    if (stageComplete) {
+        finishStage();  // Call the function to handle stage completion
+    }
 }
+
 
 // Function to dynamically display stars based on the number of lives
 function showStars(lives) {
@@ -234,10 +272,17 @@ function showLevelCompletePopup(mode) {
     }
 }
 
+// Function to handle stage completion
+function finishStage() {
+    levelFinished = true;  // Mark the level as finished
+    showLevelCompletePopup(mode);  // Show the popup for next action (e.g., next level or replay)
+}
+
+// Function to check if the player has reached the end of the level
 function checkIfLevelFinished() {
-    if (playerX + 50 >= targetX) {
-        levelFinished = true; // Mark the level as finished
-        showLevelCompletePopup(mode); // Show the popup for next action
+    // This function is redundant if we move the player based on canvas size
+    if (playerX + playerWidth >= canvas.width - 10) {
+        stageComplete = true;  // Mark stage as complete if player reaches the end
     }
 }
 
@@ -325,7 +370,7 @@ form.onsubmit = async function (event) {
 
             if (result.result === "correct") {
                 resultElement.innerText = "Correct! The character will move.";
-                movePlayer();  // Trigger the player movement when the answer is correct
+                movePlayer();  // Trigger the player movement and background scrolling when the answer is correct
             } else {
                 document.getElementById("result").innerText = "Incorrect! You lost a life.";
                 loseLife();  // Decrease life when answer is wrong
@@ -346,8 +391,25 @@ form.onsubmit = async function (event) {
     fetchQuestion(mode);
 };
 
+function resizeCanvas() {
+    // Get the width and height of the window
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
+    // Set the canvas width and height based on screen size (optional scaling factor)
+    canvas.width = screenWidth * 0.9; // For example, 90% of screen width
+    canvas.height = screenHeight * 0.6; // For example, 60% of screen height
+
+    // Redraw the scene after resizing
+    drawScene();
+}
+
+// Add event listener to resize the canvas whenever the window is resized
+window.addEventListener('resize', resizeCanvas);
+
 // Initialize game
 function init() {
+    resizeCanvas();
     dinoSpriteSheet.onload = function () {
         drawPlayer();  // Draw the initial state
     };
