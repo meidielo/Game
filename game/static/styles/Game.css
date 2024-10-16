@@ -51,7 +51,10 @@ input {
     border-radius: 10px;
     font-size: 16px;
     margin-right: 10px;
+    width: 80%; /* Make input wider for mobile */
+    max-width: 300px;
 }
+
 button {
     background-color: #FFD700;
     border: none;
@@ -73,12 +76,19 @@ canvas {
     margin: 0 auto;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    height: auto;
 }
 
 .lives {
     position: absolute;
     top: 10px;
     right: 10px;
+}
+
+img#life1, img#life2, img#life3 {
+    width: 5vw; /* Use viewport width for responsive scaling */
+    height: auto;
 }
 
 .question-box, .answer-box, .drop-zone {
@@ -161,4 +171,64 @@ canvas {
 
 .popup-buttons button#nextButton:hover {
     background-color: #005f73;
+}
+
+/* General mobile screen styling */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.8em;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+    input[type="number"] {
+        width: 90%;  /* Expand the input field to take more space */
+    }
+
+    button {
+        font-size: 1em;
+        padding: 8px 15px;
+    }
+
+    canvas {
+        width: 100%;
+        height: auto;  /* Ensure canvas maintains aspect ratio */
+    }
+
+    img#life1, img#life2, img#life3 {
+        width: 8vw;  /* Adjust hearts for smaller screens */
+    }
+
+    .popup {
+        width: 90%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* Even smaller screens (mobile phones) */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5em;
+    }
+
+    input[type="number"] {
+        width: 100%;  /* Full-width input for mobile */
+    }
+
+    button {
+        font-size: 0.9em;
+    }
+
+    img#life1, img#life2, img#life3 {
+        width: 10vw;  /* Make hearts smaller */
+    }
+
+    canvas {
+        width: 100%;
+        height: auto;  /* Maintain aspect ratio for canvas */
+    }
 }
