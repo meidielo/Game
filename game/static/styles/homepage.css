@@ -58,7 +58,8 @@ h2 {
 .points {
     font-size: 18px;
     color: orange;
-    margin-left: 5px;
+    margin-right: 5px;
+    vertical-align: middle;
 }
 
 .profile-icon {
