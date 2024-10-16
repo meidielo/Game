@@ -5,14 +5,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Profile</title>
+    <title>Profile</title>
     <link rel="stylesheet" href="{% static 'styles/profile.css' %}">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <a href="{% url 'homepage' %}" class="back-arrow">←</a>
-            <h2>Update Profile</h2>
+            <h2>Profile</h2>
             <div class="profile-info">
                 <img src="{% static 'assets/star.png' %}" alt="Star" class="star-icon">
                 <span class="points">{{ points }}</span>
