@@ -50,7 +50,7 @@ let backgroundX = 0;  // Starting position of the background
 const backgroundSpeed = 2;  // Speed at which the background moves
 let backgroundRepeatCount = 0;
 let backgroundReachedEnd = false;  // Track if the background has reached the end
-const MAX_BACKGROUND_REPEATS = 3;
+const MAX_BACKGROUND_REPEATS = 1;
 
 let stageComplete = false;  // Flag to track if the stage is complete
 
@@ -298,7 +298,7 @@ async function fetchQuestion(mode) {
         const data = await response.json();
         console.log("Response received:", response);
         console.log("Data received:", data);
-        questionElement.innerText = `Solve: ${data.question}`;
+        questionElement.innerText = `Solve: ${data.question}`; 
         document.getElementById("correct_answer").value = data.answer;
     } catch (error) {
         console.error("Error fetching question:", error);
@@ -396,15 +396,27 @@ form.onsubmit = async function (event) {
 };
 
 function resizeCanvas() {
-    // Get the width and height of the window
+    // Resize canvas to fit the screen while keeping a margin
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
 
-    // Set the canvas width and height based on screen size (optional scaling factor)
-    canvas.width = screenWidth * 0.9; // For example, 90% of screen width
-    canvas.height = screenHeight * 0.6; // For example, 60% of screen height
+    // Set canvas dimensions
+    canvas.width = screenWidth * 0.6;
+    canvas.height = screenHeight * 0.6;
 
-    // Redraw the scene after resizing
+    // Update scaling factors
+    scalingFactor = canvas.width / 800; // Assuming 800 as the default canvas width
+    playerWidth = 75 * scalingFactor;
+    playerHeight = 75 * scalingFactor;
+    playerX = canvas.width * 0.1;
+    playerY = canvas.height - playerHeight - 20;
+    distancePerMove = (canvas.width - playerWidth + 10) / movesBeforeGoal;
+
+    // Adjust text size for UI
+    document.getElementById("question").style.fontSize = `${scalingFactor * 15}px`;
+    document.getElementById("result").style.fontSize = `${scalingFactor * 15}px`;
+
+    // Redraw the entire scene after resizing
     drawScene();
 }
 
