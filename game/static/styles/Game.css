@@ -210,6 +210,17 @@ img#life1, img#life2, img#life3 {
     }
 }
 
+@media (max-width: 600px) {
+    #answerForm {
+        width: 90%;
+        font-size: 14px;
+    }
+    #levelCompletePopup {
+        width: 95%;
+        padding: 20px;
+    }
+}
+
 /* Even smaller screens (mobile phones) */
 @media (max-width: 480px) {
     h1 {

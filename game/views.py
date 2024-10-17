@@ -84,35 +84,28 @@ def generate_question(request, mode):
         answer = eval(question)
     
     elif mode == "medium":
-        # Medium mode: multiplication and division
-        operation = random.choice(["*", "/"])
+        # Medium mode: addition, subtraction, and multiplication
+        operation = random.choice(["+", "-", "*"])
 
-        if operation == "/":
-            # Ensure no division by zero and integer division only
-            num1 = random.randint(1, 10) * num2  # Ensure divisible result
+        if operation == "-":
+            # Ensure non-negative results
+            if num1 < num2:
+                num1, num2 = num2, num1
 
         question = f"{num1} {operation} {num2}"
         answer = eval(question)
 
     elif mode == "hard":
-        while True:  # Repeat the process until a valid question with an integer answer is generated
-            num3 = random.randint(1, 10)
-            operation1 = random.choice(["+", "-", "*", "/"])
-            operation2 = random.choice(["+", "-", "*", "/"])
-    
-            # Ensure num1 and num2 are divisible for division cases
-            if operation1 == "/" and num2 != 0:
-                num1 = random.randint(1, 10) * num2  # Make num1 divisible by num2
-    
-            if operation2 == "/" and num3 != 0:
-                num2 = random.randint(1, 10) * num3  # Make num2 divisible by num3
-    
-            question = f"({num1} {operation1} {num2}) {operation2} {num3}"
-            answer = eval(question)
-    
-            # Check if the answer is a whole number
-            if isinstance(answer, int):
-                break  # Exit the loop when a whole number is generated
+        # Hard mode: multiplication and division with larger numbers
+        operation = random.choice(["*", "/"])
+
+        if operation == "/":
+            # Ensure the result is a whole number and avoid division by zero
+            num2 = random.randint(1, 10)
+            num1 = num2 * random.randint(1, 10)  # Ensure num1 is divisible by num2
+
+        question = f"{num1} {operation} {num2}"
+        answer = eval(question)
 
     return JsonResponse({"question": question, "answer": answer})
 
