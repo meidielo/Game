@@ -11,6 +11,7 @@ class Profile(models.Model):
     
     def __str__(self):
         return self.user.username if self.user else "No User"
+    
 
 # from django.db import models
 # from django.contrib.auth.models import AbstractBaseUser, BaseUserManager

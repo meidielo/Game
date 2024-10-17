@@ -8,8 +8,7 @@ const form = document.getElementById('answerForm');
 // Dino sprite settings
 const SPRITE_WIDTH = 24;  // Width of each frame in the sprite sheet
 const SPRITE_HEIGHT = 24; // Height of each frame in the sprite sheet
-const MOVING_START_FRAME = 0;  // Starting frame of the moving animation
-const MOVING_END_FRAME = 14;    // Ending frame of the moving animation
+const FRAMES = 11;
 const IDLE_FRAMES = 3;    // Number of frames for idle animation (first 3)
 const LOSS_ANIMATION_FRAMES = [15, 16, 17];
 // Calculate the scaling factor based on the canvas width (relative scaling)
@@ -49,7 +48,9 @@ let distancePerMove = (canvas.width - playerWidth - 10) / movesBeforeGoal;  // D
 
 let backgroundX = 0;  // Starting position of the background
 const backgroundSpeed = 2;  // Speed at which the background moves
+let backgroundRepeatCount = 0;
 let backgroundReachedEnd = false;  // Track if the background has reached the end
+const MAX_BACKGROUND_REPEATS = 3;
 
 let stageComplete = false;  // Flag to track if the stage is complete
 
@@ -71,7 +72,12 @@ function drawBackground() {
 
         // If the background reaches the end, stop moving it
         if (backgroundX <= -canvas.width) {
-            backgroundReachedEnd = true;  // Mark that the background has reached the end
+            backgroundX = 0;
+            backgroundRepeatCount++;
+        }
+
+        if (backgroundRepeatCount >= MAX_BACKGROUND_REPEATS) {
+            backgroundReachedEnd = true;
         }
     }
 
@@ -122,20 +128,22 @@ function drawPlayer() {
 //     );
 // }
 
-
 // Function to move the player when an answer is correct
 function movePlayer() {
+    const questionElement = document.getElementById("question");
     if (!levelFinished && movesMade < movesBeforeGoal) {
+        questionElement.innerText = 'Loading...';
         movesMade++;  // Increment the number of moves made
-        // targetPositionX = playerX + distancePerMove; // Set the target position
         moving = true;  // Start smooth movement and walking animation
 
         setTimeout(() => {
             moving = false;  // Stop moving after a short delay
+            if (movesMade < movesBeforeGoal) {
+                fetchQuestion(mode);  // Fetch a new question only after finishing the move
+            }
         }, 2000);  // Duration for moving and animation (e.g., 2 seconds)
     }
 }
-
 
 // Function to update the animation frame
 function updateFrame() {
@@ -150,11 +158,7 @@ function updateFrame() {
                 isLosingLife = false; // Stop life loss animation
             }
         } else if (moving) {
-            // Loop through frames 18 to 24 for moving animation only when the player is moving
-            currentFrame = (currentFrame + 1);
-            if (currentFrame > MOVING_END_FRAME) {
-                currentFrame = MOVING_START_FRAME; // Loop back to frame 18
-            }
+            currentFrame = (currentFrame + 1) % FRAMES;
         } else {
             // Loop through the idle frames (first 3 frames) when the player is not moving
             currentFrame = (currentFrame + 1) % IDLE_FRAMES;
@@ -388,7 +392,7 @@ form.onsubmit = async function (event) {
     document.getElementById("user_answer").value = "";
 
     // Fetch a new question after submitting the answer
-    fetchQuestion(mode);
+    // fetchQuestion(mode);
 };
 
 function resizeCanvas() {
