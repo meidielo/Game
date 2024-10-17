@@ -1,2 +1,7 @@
-db.sqlite3
-debug.log
+# Ignore database and log files
+*.sqlite3
+*.log
+
+# Ignore compiled Python files
+__pycache__/
+*.pyc
